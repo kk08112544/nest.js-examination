@@ -49,6 +49,9 @@ export class PublicPostsService {
   }
 
   async getPublishedPosts(published: boolean, page: number, limit: number, title: string): Promise<any>{
+    if (published === undefined && page === undefined && title === undefined && limit === undefined) {
+      return "content is not empty";
+    }
     let pageNumber = isNaN(page) || page < 1 ? 1 : page;
     let limitNumber = isNaN(limit) || limit < 1 ? 10 : limit;
 
@@ -114,6 +117,9 @@ export class PublicPostsService {
   }
 
   async update(id: string, updatePublicPostDto: UpdatePublicPostDto) {
+    if (updatePublicPostDto.title === undefined && updatePublicPostDto.content === undefined && updatePublicPostDto.published === undefined) {
+      return "content is not empty";
+    }
     let post = await this.postRepository.findOne({where : { id }});
 
     if(!post){

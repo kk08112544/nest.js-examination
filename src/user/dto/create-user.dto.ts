@@ -20,6 +20,4 @@ export class CreateUserDto {
     @IsNotEmpty()
     img:string
   
-    @IsNotEmpty()
-    role_id: number
   }

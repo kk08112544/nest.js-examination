@@ -22,7 +22,4 @@ export class User {
     @Column()
     img: string
 
-    @Column()
-    role_id: number
-
 }
