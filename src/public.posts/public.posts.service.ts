@@ -44,9 +44,29 @@ export class PublicPostsService {
     }
   }
 
+  // findAll() {
+  //   const find = this.postRepository.find();
+  //   return find;
+  // }
+
   findAll() {
-    return this.postRepository.find();
+    return this.postRepository.find()
+      .then(finds => {
+        const formattedFinds = finds.map(post => {
+          return {
+            ...post,
+            created_at: new Date(post.created_at).toLocaleString('th-TH', {timeZone: 'Asia/Bangkok'}),
+            updated_at: new Date(post.updated_at).toLocaleString('th-TH', {timeZone: 'Asia/Bangkok'})
+          };
+        });
+        return formattedFinds;
+      })
+      .catch(error => {
+        console.error("Error occurred:", error);
+        throw error;
+      });
   }
+  
 
   async getPublishedPosts(published: boolean, page: number, limit: number, title: string): Promise<any>{
     if (published === undefined && page === undefined && title === undefined && limit === undefined) {
