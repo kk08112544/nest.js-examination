@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { PublicPostsService } from './public.posts.service';
 import { CreatePublicPostDto } from './dto/create-public.post.dto';
 import { UpdatePublicPostDto } from './dto/update-public.post.dto';
@@ -8,11 +8,17 @@ import {Post as PostEntity } from './entities/public.post.entity';
 import { LocalAuthGuard } from 'src/auth/local/local-auth.guard';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt-auth.guard';
 import { UseGuards } from '@nestjs/common';
+import { DatePublicPostDto } from './dto/date-public.post.dto';
 
 @Controller('public.posts')
 export class PublicPostsController {
   constructor(private readonly publicPostsService: PublicPostsService) {}
 
+  @UseGuards(JwtAuthGuard)
+  @Post('searchdate')
+  searchDate(@Body() datePublicPostDto: DatePublicPostDto){
+    return this.publicPostsService.findDate(datePublicPostDto);
+  }
 
   @UseGuards(JwtAuthGuard)
   @Post('createPost')

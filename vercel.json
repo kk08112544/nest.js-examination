@@ -1,7 +1,15 @@
 {
     "version": 2,
-    "name": "Backend examination",
-    "builds": [{ "src": "server.js", "use": "@vercel/node" }],
-    "routes": [{ "src": "/(.*)",
-    "dest": "/server.js" }]
-}
+    "builds": [
+      {
+        "src": "dist/main.js",
+        "use": "@vercel/node"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "dist/main.js"
+      }
+    ]
+  }

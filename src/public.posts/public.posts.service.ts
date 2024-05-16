@@ -8,6 +8,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { format } from 'date-fns-tz';
 import { DeletePublicPostDto } from './dto/delete-public.post.dto';
+import { Between } from 'typeorm';
+import { DatePublicPostDto } from './dto/date-public.post.dto';
+import { InjectEntityManager } from '@nestjs/typeorm';
+import { EntityManager } from 'typeorm';
 
 
 @Injectable()
@@ -68,6 +72,35 @@ export class PublicPostsService {
         console.error("Error occurred:", error);
         throw error;
       });
+  }
+
+  async findDate(datePublicPostDto: DatePublicPostDto) {
+
+    if (datePublicPostDto === undefined) {
+      return 'Please provide a date';
+    }
+
+    const { created_at } = datePublicPostDto;
+
+    try {
+      const searchData = await this.postRepository.createQueryBuilder("post")
+        .select(["post.id", "post.title", "post.content","post.created_at","post.updated_at"]) 
+        .where("DATE(post.created_at) = :date", { date: created_at })
+        .getMany();
+
+      const formattedData = searchData.map(post => ({
+        id: post.id,
+        title: post.title,
+        content: post.content,
+        created_at: format(new Date(post.created_at), "yyyy-MM-dd' T 'HH:mm:ss"), 
+        updated_at: format(new Date(post.updated_at), "yyyy-MM-dd' T 'HH:mm:ss"), 
+    }));
+    
+    return formattedData;
+    } catch (error) {
+      console.error("Error fetching data by date:", error);
+      throw new Error("Could not fetch data by date");
+    }
   }
   
   async getPublishedPosts(published: boolean, page: number, limit: number, title: string): Promise<any>{
