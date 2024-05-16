@@ -44,21 +44,24 @@ export class PublicPostsService {
     }
   }
 
-  // findAll() {
-  //   const find = this.postRepository.find();
-  //   return find;
-  // }
+
 
   findAll() {
+    const currentTime = new Date();
+  
     return this.postRepository.find()
       .then(finds => {
         const formattedFinds = finds.map(post => {
+          const formattedCreatedAt = format(post.created_at, "yyyy-MM-dd 'T' HH:mm:ss", { timeZone: 'Asia/Bangkok' });
+          const formattedUpdatedAt = format(post.updated_at, "yyyy-MM-dd 'T' HH:mm:ss", { timeZone: 'Asia/Bangkok' });
+  
           return {
             ...post,
-            created_at: new Date(post.created_at).toLocaleString('th-TH', {timeZone: 'Asia/Bangkok'}),
-            updated_at: new Date(post.updated_at).toLocaleString('th-TH', {timeZone: 'Asia/Bangkok'})
+            created_at: formattedCreatedAt,
+            updated_at: formattedUpdatedAt
           };
         });
+  
         return formattedFinds;
       })
       .catch(error => {
@@ -67,7 +70,6 @@ export class PublicPostsService {
       });
   }
   
-
   async getPublishedPosts(published: boolean, page: number, limit: number, title: string): Promise<any>{
     if (published === undefined && page === undefined && title === undefined && limit === undefined) {
       return "content is not empty";
